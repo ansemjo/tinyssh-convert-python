@@ -5,3 +5,6 @@ id_*
 
 # ignore python cache
 __pycache__/
+
+# ignore local vscode settings
+.vscode/
