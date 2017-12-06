@@ -1,8 +1,10 @@
 from base64 import b64encode as base64
 from json import dumps as json
 
-from keyconvert.readkey import readkey
+from keyconvert.arguments import args
 from keyconvert.buffer import Buffer
+from keyconvert.readkey import readkey
+from keyconvert.writekey import writekey
 
 class OpenSSHKey:
   """Read a key from $filename and parse its contents
@@ -51,7 +53,7 @@ class OpenSSHKey:
     buf.close()
     return blob
 
-  def __init__(self, filename):
+  def __init__(self, filename=args.key):
 
     buf = readkey(filename)
 
@@ -79,13 +81,13 @@ class OpenSSHKey:
     """Parse a secretkey blob and set contents."""
     
     # key type
-    self.type     = blob.readString()
+    self.type     = blob.readString().decode('utf-8')
     
     # curve
-    if self.type == b'ssh-ed25519':
-      self.curve = b'ed25519'
-    elif self.type == b'ecdsa-sha2-nistp256':
-      self.curve    = blob.readString()
+    if self.type == 'ssh-ed25519':
+      self.curve = 'ed25519'
+    elif self.type == 'ecdsa-sha2-nistp256':
+      self.curve    = blob.readString().decode('utf-8')
     else:
       raise ValueError('Unknown key type: %s' % self.type)
     
@@ -94,14 +96,19 @@ class OpenSSHKey:
     self.secret   = blob.readString()
     
     # comment
-    self.comment  = blob.readString()
+    self.comment  = blob.readString().decode('utf-8')
 
+    if args.verbose:
+      print('Successfully read %s key (%s).' % (self.type, self.comment))
 
   def toJSON(self):
     return json({
-      'type': self.type.decode('utf-8'),
-      'curve': self.curve.decode('utf-8'),
+      'type': self.type,
+      'curve': self.curve,
       'public': base64(self.public).decode('utf-8'),
       'secret': base64(self.secret).decode('utf-8'),
-      'comment': self.comment.decode('utf-8')
+      'comment': self.comment,
     }, indent=2)
+
+  def write(self, directory):
+    writekey(self, args.force, directory, args.verbose)

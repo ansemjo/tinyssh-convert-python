@@ -1,12 +1,14 @@
 from base64 import b64decode
 from keyconvert.buffer import Buffer
 
-def readkey (filename):
+def readkey (file):
   """Read OpenSSH-Key-V1 compatible file and return
   a Buffer of its contents."""
 
-  armor = open(filename, mode='r').read().split('\n')
+  with file as keyfile:
+    armor = keyfile.read().split('\n')
   string = ''
+
 
   BEGINTAG = '-----BEGIN OPENSSH PRIVATE KEY-----'
   ENDTAG   = '-----END OPENSSH PRIVATE KEY-----'

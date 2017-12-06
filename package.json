@@ -1,7 +1,7 @@
 {
   "name": "tinyssh-keyconvert",
   "version": "0.1.3",
-  "description": "Convert OpenSSH ECDSA/ED25519 secret keys to binary format for TinySSH.",
+  "description": "Convert OpenSSH ECDSA-nistp256/ED25519 secretkeys to binary format for TinySSH.",
   "author": "Anton Semjonov",
   "author_email": "anton@semjonov.de",
   "license": "GPL-3.0",
