@@ -1,0 +1,7 @@
+# ignore testkeys
+*key
+*key.pub
+id_*
+
+# ignore python cache
+__pycache__/
