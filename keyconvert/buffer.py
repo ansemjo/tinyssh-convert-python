@@ -22,6 +22,9 @@ class Buffer:
     l = len(self.buf)
     return { 'current': o, 'length': l, 'remaining': l-o }
 
+  def close(self):
+    del self.buf
+
   def readBytes(self, n):
     """Read n bytes and adjust offset for next read."""
     s = self.status()

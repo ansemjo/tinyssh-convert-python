@@ -39,6 +39,7 @@ class OpenSSHKey:
     for i in range(blob.status()['remaining']):
       if i > 255 or blob.readUInt8() != i+1:
         raise ValueError('Padding at the end of the secretkey blob is incorrect!')
+    blob.close()
 
   @staticmethod
   def __get_secret_blob(buf):
@@ -47,6 +48,7 @@ class OpenSSHKey:
     blob = Buffer(buf.readString())
     if buf.status()['remaining'] != 0:
       raise ValueError('There is data after the secretkey blob!')
+    buf.close()
     return blob
 
   def __init__(self, filename):
@@ -93,7 +95,7 @@ class OpenSSHKey:
     
     # comment
     self.comment  = blob.readString()
-    
+
 
   def toJSON(self):
     return json({
