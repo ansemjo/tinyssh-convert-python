@@ -4,13 +4,12 @@
 
 from argparse import ArgumentParser
 
-from keyconvert.readkey import readkey
-from keyconvert.seckey import SecKey
+from keyconvert.opensshkey import OpenSSHKey
 
 A = ArgumentParser()
 A.add_argument('-k', '--key', help='OpenSSH private key', required=True)
 args = A.parse_args()
 
-key = SecKey(readkey(args.key))
+key = OpenSSHKey(args.key)
 
 print(key.toJSON())

@@ -20,12 +20,12 @@ class Buffer:
     """Return positional status."""
     o = self.offset
     l = len(self.buf)
-    return { 'current': o, 'length': l, 'remainder': l-o }
+    return { 'current': o, 'length': l, 'remaining': l-o }
 
   def readBytes(self, n):
     """Read n bytes and adjust offset for next read."""
     s = self.status()
-    if s['remainder'] < n:
+    if s['remaining'] < n:
       raise ValueError('Offset is too large! (%d + %d > %d)' %
         (s['current'], n, s['length']))
     self.offset += n
