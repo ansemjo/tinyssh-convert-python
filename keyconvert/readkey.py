@@ -2,24 +2,34 @@ from base64 import b64decode
 from keyconvert.buffer import Buffer
 
 def readkey (filename):
-  armor = open(filename, mode='r').read()
+  """Read OpenSSH-Key-V1 compatible file and return
+  a Buffer of its contents."""
+
+  armor = open(filename, mode='r').read().split('\n')
+  string = ''
 
   BEGINTAG = '-----BEGIN OPENSSH PRIVATE KEY-----'
   ENDTAG   = '-----END OPENSSH PRIVATE KEY-----'
-  string = ''
 
-  for line in armor.split('\n'):
-    
-    if line == BEGINTAG:
-      flag = True
-      continue
+  for index, line in enumerate(armor):
+
+    if index == 0:
+      # first line must have the begin tag
+      if line != BEGINTAG:
+        raise ValueError('Not a compatible file!')
+      else:
+        continue
+
+    if index == (len(armor)-1) and line != ENDTAG:
+      # reached last line with no end tag
+      raise ValueError('Partial file? No end tag!')
 
     if line == ENDTAG:
-      flag = False
+      # reached end tag, break loop
       break
 
-    if flag is True:
-      string += line
+    # default action: concatenate base64 string
+    string += line
 
   bytestring = b64decode(string)
   key = Buffer(bytestring)
@@ -28,4 +38,4 @@ def readkey (filename):
   if key.readBytes(len(OPENSSH_TAG)) == OPENSSH_TAG:
     return key
   else:
-    raise ValueError('Not an OpenSSH key')
+    raise ValueError('Not an OpenSSH V1 key!')
