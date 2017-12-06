@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 
 from setuptools import setup, find_packages
+from keyconvert.package import package
 
 setup(
-  name = "tinyssh-convert",
-  version = "0.0.1",
-  author = "Anton Semjonov",
-  scripts = ["tinyssh-keyconvert.py"],
+  name = package['name'],
+  version = package['version'],
+  author = package['author'],
+  author_email = package['author_email'],
+  scripts = ["tinyssh-keyconvert"],
   package_dir = { 'keyconvert': 'keyconvert' },
   packages = find_packages(),
+  data_files = [ 'package.json' ],
 )

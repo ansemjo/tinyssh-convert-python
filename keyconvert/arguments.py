@@ -1,10 +1,20 @@
 from argparse import ArgumentParser
 
-def Arguments():
+from keyconvert.package import package
+
+def arguments():
   """Parse commandline-arguments."""
 
   # init
-  parser = ArgumentParser()
+  parser = ArgumentParser(
+    description=package['description'],
+    epilog='%(name)s v%(version)s (%(author)s)' %
+      {
+        'name'    : package['name'],
+        'version' : package['version'],
+        'author'  : package['author'],
+      }
+  )
 
   # source file
   parser.add_argument('-k', '--key', help='OpenSSH secret key', required=True)

@@ -2,10 +2,10 @@
 
 """Convert armored OpenSSH key to binary TinySSH format."""
 
-from keyconvert.arguments import Arguments
+from keyconvert.arguments import arguments
 from keyconvert.opensshkey import OpenSSHKey
 
-args = Arguments()
+args = arguments()
 key = OpenSSHKey(args.key)
 
 print(key.toJSON())
