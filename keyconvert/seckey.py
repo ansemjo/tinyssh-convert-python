@@ -1,10 +1,10 @@
-from buffer import Buffer
 from base64 import b64encode as base64
 from json import dumps as json
+from keyconvert.buffer import Buffer
 
 class SecKey:
 
-  def __init__(self, buf: Buffer):
+  def __init__(self, buf):
 
     # check that key is not encrypted
     if buf.readString() != b'none':

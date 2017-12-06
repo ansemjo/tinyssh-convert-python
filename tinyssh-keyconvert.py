@@ -2,10 +2,10 @@
 
 """Convert armored OpenSSH key to binary TinySSH format."""
 
-from readkey import readkey
-from key import SecKey
-
 from argparse import ArgumentParser
+
+from keyconvert.readkey import readkey
+from keyconvert.seckey import SecKey
 
 A = ArgumentParser()
 A.add_argument('-k', '--key', help='OpenSSH private key', required=True)

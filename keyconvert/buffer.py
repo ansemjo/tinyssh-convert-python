@@ -2,11 +2,11 @@ from struct import unpack
 
 class Buffer:
 
-  def __init__(self, buf: bytes):
+  def __init__(self, buf):
     self.buf = buf
     self.offset = 0
 
-  def readBytes(self, n: int):
+  def readBytes(self, n):
     #print(f'({self.offset} +{n}, {len(self.buf)})', end=' ')
     self.offset += n
     slice = self.buf[self.offset-n:self.offset]

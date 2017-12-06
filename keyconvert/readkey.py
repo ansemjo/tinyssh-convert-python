@@ -1,7 +1,7 @@
 from base64 import b64decode
-from buffer import Buffer
+from keyconvert.buffer import Buffer
 
-def readkey (filename: str):
+def readkey (filename):
   armor = open(filename, mode='r').read()
 
   BEGINTAG = '-----BEGIN OPENSSH PRIVATE KEY-----'
