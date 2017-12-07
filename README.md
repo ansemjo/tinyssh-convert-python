@@ -31,6 +31,12 @@ output:
   -j, --json         output a json representation to stdout
 ```
 
+### Usage with ECDSA-SHA2-NISTP256
+
+This keytype is not fully supported yet! Right now it simply writes the public
+and secret parts to files without parsing or unwrapping the keys any further.
+`tinysshd-printkeys` does not complain but the hostkey fingerprints differ!
+
 ## Installation
 
 Use the included `./setup.py` script to install this program. It may require
