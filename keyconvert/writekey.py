@@ -1,3 +1,5 @@
+# Copyright Anton Semjonov, Licensed under GPL-3.0
+
 from os.path import realpath
 
 TINYSSH_FILENAME = {

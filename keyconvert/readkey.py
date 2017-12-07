@@ -1,3 +1,5 @@
+# Copyright Anton Semjonov, Licensed under GPL-3.0
+
 from base64 import b64decode
 from keyconvert.buffer import Buffer
 

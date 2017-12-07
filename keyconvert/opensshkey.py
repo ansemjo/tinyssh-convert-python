@@ -1,3 +1,5 @@
+# Copyright Anton Semjonov, Licensed under GPL-3.0
+
 from base64 import b64encode as base64
 from json import dumps as json
 

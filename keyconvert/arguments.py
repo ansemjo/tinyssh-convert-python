@@ -1,18 +1,22 @@
+# Copyright Anton Semjonov, Licensed under GPL-3.0
+
 from argparse import ArgumentParser, FileType
 
-from keyconvert.package import package
+from keyconvert.package import package as p
 
 def arguments():
   """Parse commandline-arguments."""
 
   # init
   parser = ArgumentParser(
-    description=package['description'],
-    epilog='%(name)s v%(version)s (%(author)s)' %
+    description=p['description'],
+    epilog='Version %(version)s (Copyright %(year)s %(author)s, Licensed under %(license)s)' %
       {
-        'name'    : package['name'],
-        'version' : package['version'],
-        'author'  : package['author'],
+        'name'    : p['name'],
+        'version' : p['version'],
+        'author'  : p['author'],
+        'license' : p['license'],
+        'year'    : p['license_years'],
       }
   )
 

@@ -1,3 +1,5 @@
+# Copyright Anton Semjonov, Licensed under GPL-3.0
+
 from struct import unpack
 
 def uint32(by):

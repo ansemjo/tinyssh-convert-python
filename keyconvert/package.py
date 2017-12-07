@@ -1,3 +1,5 @@
+# Copyright Anton Semjonov, Licensed under GPL-3.0
+
 import json
 from os import path
 

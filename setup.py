@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Copyright Anton Semjonov, Licensed under GPL-3.0
 
 from setuptools import setup, find_packages
 from keyconvert.package import package

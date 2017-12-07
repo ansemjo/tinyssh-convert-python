@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-
-"""Convert armored OpenSSH key to binary TinySSH format."""
+# Copyright Anton Semjonov, Licensed under GPL-3.0
 
 from keyconvert.opensshkey import OpenSSHKey
 from keyconvert.arguments import args
