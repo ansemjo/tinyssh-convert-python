@@ -90,6 +90,11 @@ It is in itself a bytestring:
  ... until secretkey blob reaches next encryption blocksize (256)
 ```
 
+The magic numbers must be identical. They would usually indicate a successful decryption.
+
+The padding at the end is simply a sequence of incrementing `chars` to pad the secretkey
+blob to the (would-be) encryption block size.
+
 The contents vary depending on the key type:
 
 ### 3.1. ssh-ed25519
