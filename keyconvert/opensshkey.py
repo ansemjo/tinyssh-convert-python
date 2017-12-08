@@ -88,14 +88,18 @@ class OpenSSHKey:
     # curve
     if self.type == 'ssh-ed25519':
       self.curve = 'ed25519'
+      self.public   = blob.readString()
+      self.secret   = blob.readString()
+
     elif self.type == 'ecdsa-sha2-nistp256':
       self.curve    = blob.readString().decode('utf-8')
+      blob.readBytes(1)
+      self.public   = blob.readString()
+      blob.readBytes(1)
+      self.secret   = blob.readString()
+
     else:
       raise ValueError('Unknown key type: %s' % self.type)
-    
-    # public, secret parts
-    self.public   = blob.readString()
-    self.secret   = blob.readString()
     
     # comment
     self.comment  = blob.readString().decode('utf-8')
