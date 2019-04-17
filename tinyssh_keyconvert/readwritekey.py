@@ -4,6 +4,7 @@ from base64 import b64decode
 from tinyssh_keyconvert.buffer import Buffer
 from os.path import realpath
 from os import umask
+from pathlib import Path
 
 
 def read_openssh_v1_key(keyfile):
@@ -65,6 +66,7 @@ TINYSSH_KEYDIR = "/etc/tinyssh/sshkeydir"
 
 def write_tinyssh_keys(key, force=False, directory=TINYSSH_KEYDIR, verbose=False):
     """Write a converted key hash with private and public parts to files in directory."""
+    Path(directory).mkdir(exist_ok=True, parents=True)
     for keypart in ("public", "secret"):
         if keypart == "secret":
           oldumask = umask(0o077)
