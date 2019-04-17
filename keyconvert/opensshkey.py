@@ -6,8 +6,7 @@ from sys import stderr
 
 from keyconvert.arguments import args
 from keyconvert.buffer import Buffer
-from keyconvert.readkey import readkey
-from keyconvert.writekey import writekey
+from keyconvert.readwritekey import read_openssh_key, write_tinyssh_keys
 
 class OpenSSHKey:
   """Read a key from $filename and parse its contents
@@ -58,7 +57,7 @@ class OpenSSHKey:
 
   def __init__(self, filename=args.key):
 
-    buf = readkey(filename)
+    buf = read_openssh_key(filename)
 
     # check prerequisites
     self.__check_encryption(buf)
@@ -124,4 +123,4 @@ class OpenSSHKey:
     }, indent=2)
 
   def write(self, directory):
-    writekey(self, args.force, directory, args.verbose)
+    write_tinyssh_keys(self, args.force, directory, args.verbose)
