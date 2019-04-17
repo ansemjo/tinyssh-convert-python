@@ -1,126 +1,94 @@
 # Copyright Anton Semjonov, Licensed under GPL-3.0
 
-from base64 import b64encode as base64
-from json import dumps as json
 from sys import stderr
-
-from keyconvert.arguments import args
 from keyconvert.buffer import Buffer
-from keyconvert.readwritekey import read_openssh_key, write_tinyssh_keys
+
 
 class OpenSSHKey:
-  """Read a key from $filename and parse its contents
-  if it is an OpenSSH compatible secretkey."""
+    """Parse an OpenSSH key from a passed Buffer."""
 
-  @staticmethod
-  def __check_encryption(buf):
-    """Cipher and KDF need to be none,
-    i.e. the key must not be encrypted!"""
-    if buf.readString() != b'none':
-      raise ValueError("Cipher is not 'none'!")
-    if buf.readString() != b'none':
-      raise ValueError("KDF is not 'none'!")
-    if buf.readString() != b'':
-      raise ValueError("KDF options are not empty!")
+    def __init__(self, keybuf, verbose=False):
 
-  @staticmethod
-  def __check_singlekey(buf):
-    """Check that the number of keys is equal to 1."""
-    if buf.readUInt32() != 1:
-      raise ValueError("More than one key inside!")
+        # cipher and kdf need to be 'none', i.e. the key must not be encrypted
+        if keybuf.readString() != b"none":
+            raise ValueError("Cipher is not b'none'!")
+        if keybuf.readString() != b"none":
+            raise ValueError("KDF is not b'none'!")
+        if keybuf.readString() != b"":
+            raise ValueError("KDF options are not empty!")
 
-  @staticmethod
-  def __check_secret_magic(blob):
-    """Check that there are two identical uint32's at the beginning
-    of the secretkey blob, indicating successful 'decryption'."""
-    if blob.readUInt32() != blob.readUInt32():
-      raise ValueError('Magic numbers in secretkey blob do not match!')
+        # check that the number of keys is equal to 1
+        if keybuf.readUInt32() != 1:
+            raise ValueError("More than one key inside!")
 
-  @staticmethod
-  def __check_secret_padding(blob):
-    """Check that the Padding at the end of the secret
-    key blob is an incrementing sequence <= blocksize."""
-    for i in range(blob.status()['remaining']):
-      if i > 255 or blob.readUInt8() != i+1:
-        raise ValueError('Padding at the end of the secretkey blob is incorrect!')
-    blob.close()
+        # read and ignore public key
+        keybuf.readString()
 
-  @staticmethod
-  def __get_secret_blob(buf):
-    """Get secretkey blob and check that there is no additional
-    data at the end of the buffer."""
-    blob = Buffer(buf.readString())
-    if buf.status()['remaining'] != 0:
-      raise ValueError('There is data after the secretkey blob!')
-    buf.close()
-    return blob
+        # get secretkey blob and check that there is no additional data at the end
+        blob = Buffer(keybuf.readString())
+        if keybuf.status()["remaining"] != 0:
+            raise ValueError("There is data after the secretkey blob!")
+        keybuf.close()
 
-  def __init__(self, filename=args.key):
+        # check that there are two identical uint32's at the beginning
+        if blob.readUInt32() != blob.readUInt32():
+            raise ValueError("Magic numbers in secretkey blob do not match!")
 
-    buf = read_openssh_key(filename)
+        # parse key contents
+        self.__parseSecretBlob(blob)
 
-    # check prerequisites
-    self.__check_encryption(buf)
-    self.__check_singlekey(buf)
+        # check for correct padding at the end of the secret
+        for i in range(blob.status()["remaining"]):
+            if i > 255 or blob.readUInt8() != i + 1:
+                raise ValueError("Padding at the end of the secretkey blob is incorrect!")
+        blob.close()
 
-    # ignore public key
-    buf.readString()
+        if verbose:
+            print("Successfully read %s key (%s)." % (self.type, self.comment))
 
-    # get secret key blob
-    blob = self.__get_secret_blob(buf)
+    def __parseSecretBlob(self, blob):
+        """Parse a secretkey blob and set contents."""
 
-    # check magic numbers
-    self.__check_secret_magic(blob)
+        # read key type
+        self.type = blob.readString().decode("utf-8")
 
-    # parse key contents
-    self.__parseSecretBlob(blob)
+        # parse curve parameters depending on keytype
+        if self.type == "ssh-ed25519":
+            self.curve = "ed25519"
+            self.public = blob.readString()
+            self.secret = blob.readString()
 
-    # check padding
-    self.__check_secret_padding(blob)
+        elif self.type == "ecdsa-sha2-nistp256":
+            print("WARNING: ECDSA key support is incomplete and incompatible with tinyssh!", file=stderr)
+            # since version 20190101 tinyssh deprecated and removed ecdsa anyway ...
+            self.curve = blob.readString().decode("utf-8")
+            coordinates = Buffer(blob.readString())
+            compression = coordinates.readUInt8()
+            if compression != 0x04:
+                print("the ecdsa coordinates in compressed form!")
+            x = coordinates.readBytes(32)
+            y = coordinates.readBytes(32)
+            self.secret = x + y
+            self.public = blob.readString()
 
+        else:
+            raise ValueError("Unknown key type: %s" % self.type)
 
-  def __parseSecretBlob(self, blob):
-    """Parse a secretkey blob and set contents."""
-    
-    # key type
-    self.type     = blob.readString().decode('utf-8')
-    
-    # curve
-    if self.type == 'ssh-ed25519':
-      self.curve = 'ed25519'
-      self.public   = blob.readString()
-      self.secret   = blob.readString()
+        # comment
+        self.comment = blob.readString().decode("utf-8")
 
-    elif self.type == 'ecdsa-sha2-nistp256':
-      print('WARNING: ECDSA key support is incomplete and incompatible with tinyssh!', file=stderr)
-      # since version 20190101 tinyssh deprecated and removed ecdsa anyway ...
-      self.curve    = blob.readString().decode('utf-8')
-      coordinates   = Buffer(blob.readString())
-      is_compressed = coordinates.readUInt8()
-      if is_compressed != 0x04:
-        print('the ecdsa coordinates are not in compressed form!')
-      x = coordinates.readBytes(32)
-      y = coordinates.readBytes(32)
-      self.secret = x + y
-      self.public = blob.readString()
+    def json(self, indent=None):
+        from base64 import b64encode as base64
+        from json import dumps as json
 
-    else:
-      raise ValueError('Unknown key type: %s' % self.type)
-    
-    # comment
-    self.comment  = blob.readString().decode('utf-8')
+        return json(
+            {
+                "type": self.type,
+                "curve": self.curve,
+                "public": base64(self.public).decode("utf-8"),
+                "secret": base64(self.secret).decode("utf-8"),
+                "comment": self.comment,
+            },
+            indent=indent,
+        )
 
-    if args.verbose:
-      print('Successfully read %s key (%s).' % (self.type, self.comment))
-
-  def toJSON(self):
-    return json({
-      'type': self.type,
-      'curve': self.curve,
-      'public': base64(self.public).decode('utf-8'),
-      'secret': base64(self.secret).decode('utf-8'),
-      'comment': self.comment,
-    }, indent=2)
-
-  def write(self, directory):
-    write_tinyssh_keys(self, args.force, directory, args.verbose)

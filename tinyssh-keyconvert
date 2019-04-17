@@ -1,13 +1,38 @@
 #!/usr/bin/env python3
 # Copyright Anton Semjonov, Licensed under GPL-3.0
 
-from keyconvert.opensshkey import OpenSSHKey
-from keyconvert.arguments import args
+from argparse import ArgumentParser, FileType
+from keyconvert import opensshkey, readwritekey
 
-key = OpenSSHKey()
+parser = ArgumentParser(
+    description="Convert OpenSSH ed5519/ecdsa-nistp256 secretkeys to binary format for TinySSH."
+)
 
+# be verbose
+parser.add_argument("-v", "--verbose", help="be verbose", action="store_true")
+
+# input file: an OpenSSH key
+group_input = parser.add_argument_group("input")
+group_input.add_argument("key", type=FileType("r"), help="openssh secret key")
+
+# outputs group: what to do with the key
+group_output = parser.add_argument_group("output")
+group_output.add_argument("-j", "--json", help="output a json representation to stdout", action="store_true")
+group_output.add_argument("-d", "--dir", help="directory to write tinyssh key files to", default=readwritekey.TINYSSH_KEYDIR)
+group_output.add_argument("-f", "--force", help="overwrite existing files", action="store_true")
+
+# parse commandline
+args = parser.parse_args()
+
+# read key
+keybuf = readwritekey.read_openssh_v1_key(args.key)
+
+# parse key
+key = opensshkey.OpenSSHKey(keybuf, verbose=args.verbose)
+
+# print key
 if args.json:
-  print(key.toJSON())
+    print(key.json(indent=2))
 
-if args.dir != None:
-  key.write(args.dir)
+# write key
+readwritekey.write_tinyssh_keys(key, args.force, args.dir)

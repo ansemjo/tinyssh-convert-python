@@ -5,7 +5,7 @@ from keyconvert.buffer import Buffer
 from os.path import realpath
 
 
-def read_openssh_key(keyfile):
+def read_openssh_v1_key(keyfile):
     """Read OpenSSH-Key-V1 compatible file and return a Buffer of its contents."""
 
     armor = keyfile.read().split("\n")
