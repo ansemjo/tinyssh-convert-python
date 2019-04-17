@@ -2,7 +2,7 @@
 # Copyright Anton Semjonov, Licensed under GPL-3.0
 
 from argparse import ArgumentParser, FileType
-from keyconvert import opensshkey, readwritekey
+from tinyssh_keyconvert import opensshkey, readwritekey
 
 parser = ArgumentParser(
     description="Convert OpenSSH ed5519/ecdsa-nistp256 secretkeys to binary format for TinySSH."
@@ -18,7 +18,9 @@ group_input.add_argument("key", type=FileType("r"), help="openssh secret key")
 # outputs group: what to do with the key
 group_output = parser.add_argument_group("output")
 group_output.add_argument("-j", "--json", help="output a json representation to stdout", action="store_true")
-group_output.add_argument("-d", "--dir", help="directory to write tinyssh key files to", default=readwritekey.TINYSSH_KEYDIR)
+group_output.add_argument(
+    "-d", "--dir", help="directory to write tinyssh key files to", default=readwritekey.TINYSSH_KEYDIR
+)
 group_output.add_argument("-f", "--force", help="overwrite existing files", action="store_true")
 
 # parse commandline

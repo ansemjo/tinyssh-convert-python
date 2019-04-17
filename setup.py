@@ -14,7 +14,6 @@ setup(
     author_email="anton@semjonov.de",
     url="https://github.com/ansemjo/tinyssh-keyconvert.py",
     scripts=["tinyssh-keyconvert"],
-    package_dir={"keyconvert": "keyconvert"},
     packages=find_packages(),
     python_requires=">3",
 )

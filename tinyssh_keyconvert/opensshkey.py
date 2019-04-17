@@ -1,7 +1,7 @@
 # Copyright Anton Semjonov, Licensed under GPL-3.0
 
 from sys import stderr
-from keyconvert.buffer import Buffer
+from tinyssh_keyconvert.buffer import Buffer
 
 
 class OpenSSHKey:
