@@ -3,6 +3,7 @@
 from base64 import b64decode
 from tinyssh_keyconvert.buffer import Buffer
 from os.path import realpath
+from os import umask
 
 
 def read_openssh_v1_key(keyfile):
@@ -65,9 +66,13 @@ TINYSSH_KEYDIR = "/etc/tinyssh/sshkeydir"
 def write_tinyssh_keys(key, force=False, directory=TINYSSH_KEYDIR, verbose=False):
     """Write a converted key hash with private and public parts to files in directory."""
     for keypart in ("public", "secret"):
+        if keypart == "secret":
+          oldumask = umask(0o077)
         path = realpath("%s/%s" % (directory, TINYSSH_FILENAME[key.type][keypart]))
         with open(path, mode="wb" if force else "xb") as outfile:
             if verbose:
                 print("Writing %s/%s to %s" % (key.type, keypart, path))
             outfile.write(getattr(key, keypart))
+        if keypart == "secret":
+          umask(oldumask)
 
