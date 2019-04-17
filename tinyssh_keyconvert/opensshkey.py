@@ -7,7 +7,7 @@ from tinyssh_keyconvert.buffer import Buffer
 class OpenSSHKey:
     """Parse an OpenSSH key from a passed Buffer."""
 
-    def __init__(self, keybuf, verbose=False):
+    def __init__(self, keybuf):
 
         # cipher and kdf need to be 'none', i.e. the key must not be encrypted
         if keybuf.readString() != b"none":
@@ -43,9 +43,6 @@ class OpenSSHKey:
                 raise ValueError("Padding at the end of the secretkey blob is incorrect!")
         blob.close()
 
-        if verbose:
-            print("Successfully read %s key (%s)." % (self.type, self.comment))
-
     def __parseSecretBlob(self, blob):
         """Parse a secretkey blob and set contents."""
 
@@ -65,7 +62,7 @@ class OpenSSHKey:
             coordinates = Buffer(blob.readString())
             compression = coordinates.readUInt8()
             if compression != 0x04:
-                print("the ecdsa coordinates in compressed form!")
+                raise ValueError("The ECDSA coordinates are in compressed form!")
             x = coordinates.readBytes(32)
             y = coordinates.readBytes(32)
             self.secret = x + y

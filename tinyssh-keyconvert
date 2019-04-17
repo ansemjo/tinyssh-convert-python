@@ -22,19 +22,30 @@ group_output.add_argument(
     "-d", "--dir", help="directory to write tinyssh key files to", default=readwritekey.TINYSSH_KEYDIR
 )
 group_output.add_argument("-f", "--force", help="overwrite existing files", action="store_true")
+group_output.add_argument("-n", "--dry-run", help="do not write keys, only parse", action="store_true")
 
 # parse commandline
 args = parser.parse_args()
+
+# disable traceback if not verbose
+if not args.verbose:
+    import sys
+    sys.tracebacklimit = 0
 
 # read key
 keybuf = readwritekey.read_openssh_v1_key(args.key)
 
 # parse key
-key = opensshkey.OpenSSHKey(keybuf, verbose=args.verbose)
+key = opensshkey.OpenSSHKey(keybuf)
+if args.verbose:
+    print("Successfully read %s key (%s)." % (key.type, key.comment))
 
 # print key
 if args.json:
     print(key.json(indent=2))
 
 # write key
-readwritekey.write_tinyssh_keys(key, args.force, args.dir)
+if not args.dry_run:
+    readwritekey.write_tinyssh_keys(key, args.force, args.dir)
+    if args.verbose:
+        print("Wrote tinyssh keys to %s." % args.dir)
