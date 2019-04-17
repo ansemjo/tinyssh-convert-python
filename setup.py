@@ -15,5 +15,5 @@ setup(
     url="https://github.com/ansemjo/tinyssh-keyconvert",
     scripts=["tinyssh-keyconvert"],
     packages=find_packages(),
-    python_requires=">3",
+    python_requires=">3.5",
 )
