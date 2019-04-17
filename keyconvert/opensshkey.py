@@ -2,6 +2,7 @@
 
 from base64 import b64encode as base64
 from json import dumps as json
+from sys import stderr
 
 from keyconvert.arguments import args
 from keyconvert.buffer import Buffer
@@ -92,11 +93,17 @@ class OpenSSHKey:
       self.secret   = blob.readString()
 
     elif self.type == 'ecdsa-sha2-nistp256':
+      print('WARNING: ECDSA key support is incomplete and incompatible with tinyssh!', file=stderr)
+      # since version 20190101 tinyssh deprecated and removed ecdsa anyway ...
       self.curve    = blob.readString().decode('utf-8')
-      blob.readBytes(1)
-      self.public   = blob.readString()
-      blob.readBytes(1)
-      self.secret   = blob.readString()
+      coordinates   = Buffer(blob.readString())
+      is_compressed = coordinates.readUInt8()
+      if is_compressed != 0x04:
+        print('the ecdsa coordinates are not in compressed form!')
+      x = coordinates.readBytes(32)
+      y = coordinates.readBytes(32)
+      self.secret = x + y
+      self.public = blob.readString()
 
     else:
       raise ValueError('Unknown key type: %s' % self.type)
