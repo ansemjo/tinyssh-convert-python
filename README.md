@@ -42,14 +42,14 @@ the hostkey fingerprints differ!
 Use [`pip`](https://pip.pypa.io/en/stable/installing/) to install this package directly from GitHub:
 
 ```
-pip install git+https://github.com/ansemjo/tinyssh-convert.py
+pip install git+https://github.com/ansemjo/tinyssh-keyconvert
 ```
 
 Or install a tagged release from the
 [Releases](https://github.com/ansemjo/tinyssh-convert.py/releases) page:
 
 ```
-pip install https://github.com/ansemjo/tinyssh-convert.py/archive/v0.3.0.zip
+pip install https://github.com/ansemjo/tinyssh-keyconvert/archive/v0.3.0.zip
 ```
 
 ## LICENSE

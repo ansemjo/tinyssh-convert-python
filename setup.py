@@ -12,7 +12,7 @@ setup(
     license="GPL-3.0",
     author="Anton Semjonov",
     author_email="anton@semjonov.de",
-    url="https://github.com/ansemjo/tinyssh-keyconvert.py",
+    url="https://github.com/ansemjo/tinyssh-keyconvert",
     scripts=["tinyssh-keyconvert"],
     packages=find_packages(),
     python_requires=">3",
