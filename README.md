@@ -31,6 +31,8 @@ A complete and up-to-date usage note can be obtained by running `tinyssh-keyconv
 The converted keys are named `ed25519.pk`/`.ed25519.sk` and `nistp256ecdsa.pk`/`.nistp256ecdsa.sk`
 respectively.
 
+My understanding of the OpenSSH key format is documented in [format.md](format.md).
+
 ### Usage with ECDSA-SHA2-NISTP256
 
 This keytype is not fully supported yet! Right now it simply writes the public and secret parts to
