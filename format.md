@@ -111,12 +111,16 @@ The contents vary depending on the key type:
 ```
 [String] key type         # = b'ecdsa-sha2-nistp256'
 [String] curve            # = b'nistp256'
-[String] public key       # ???
-[String] secret key       # ???
+[UInt 8] compression      # = \x04
+[UInt32] secret key x     # uncompressed X coordinate
+[UInt32] secret key y     # uncompressed Y coordinate
+[String] public key       # usually 32 bytes
 [String] key comment      # username@hostname
 ```
 
-As you can see, I am still not sure what format exactly the keys are and how to make them compatible with TinySSH's format.
+I am still not sure what format exactly the keys are and how to make them compatible with TinySSH's format.
+
+*Note:* Since version `20190101` TinySSH deprecated and removed support for ECDSA keys anyway ..
 
 ### 3.3. others
 

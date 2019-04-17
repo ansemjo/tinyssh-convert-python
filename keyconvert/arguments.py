@@ -2,22 +2,12 @@
 
 from argparse import ArgumentParser, FileType
 
-from keyconvert.package import package as p
-
 def arguments():
   """Parse commandline-arguments."""
 
   # init
   parser = ArgumentParser(
-    description=p['description'],
-    epilog='Version %(version)s (Copyright %(year)s %(author)s, Licensed under %(license)s)' %
-      {
-        'name'    : p['name'],
-        'version' : p['version'],
-        'author'  : p['author'],
-        'license' : p['license'],
-        'year'    : p['license_years'],
-      }
+    description="Convert OpenSSH ed5519/ecdsa-nistp256 secretkeys to binary format for TinySSH.",
   )
 
   # be verbose
