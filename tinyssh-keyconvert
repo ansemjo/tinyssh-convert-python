@@ -4,8 +4,15 @@
 from argparse import ArgumentParser, FileType
 from tinyssh_keyconvert import opensshkey, readwritekey
 
+# attempt to read version
+try:
+    from tinyssh_keyconvert.__version__ import __version__
+except ImportError:
+    __version__ = "development"
+
 parser = ArgumentParser(
-    description="Convert OpenSSH ed5519/ecdsa-nistp256 secretkeys to binary format for TinySSH."
+    description="Convert OpenSSH ed5519/ecdsa-nistp256 secretkeys to binary format for TinySSH.",
+    epilog="%(prog)s Version " + str(__version__),
 )
 
 # be verbose
@@ -30,6 +37,7 @@ args = parser.parse_args()
 # disable traceback if not verbose
 if not args.verbose:
     import sys
+
     sys.tracebacklimit = 0
 
 # read key
