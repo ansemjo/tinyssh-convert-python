@@ -8,7 +8,7 @@ setup(
     name="tinyssh-keyconvert",
     description="Convert OpenSSH ed5519/ecdsa-nistp256 secretkeys to binary format for TinySSH.",
     keywords="openssh tiyssh privatekey key converter",
-    version=cmd(["sh", "./version.sh", "describe"]).strip().decode(),
+    version=cmd(["sh", "./version.sh", "version"]).strip().decode(),
     license="GPL-3.0",
     author="Anton Semjonov",
     author_email="anton@semjonov.de",

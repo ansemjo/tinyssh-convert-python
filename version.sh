@@ -30,7 +30,7 @@ FALLBACK_VERSION='commit'
 FALLBACK_COMMIT='unknown'
 
 # Revision seperator in 'describe' string
-REVISION='-'
+REVISION='-dev'
 
 # check if variable contains a substituted value or still has the format string
 hasval() { test -n "${1##\$Format*}"; }
